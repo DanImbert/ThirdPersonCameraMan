@@ -399,14 +399,9 @@ void AThirdPersonCameraManPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
-    // Minimal key binds to control secondary feed without Blueprint
+    // Minimal key binds for assignment focus
     if (InputComponent)
     {
-        InputComponent->BindKey(EKeys::R, IE_Pressed, this, &AThirdPersonCameraManPlayerController::FeedToggle);
-        // Shift+R to show first other rig (index 1 typically, index 0 is often your own rig)
-        InputComponent->BindKey(FInputChord(EKeys::R, EModifierKey::Shift), IE_Pressed, this, &AThirdPersonCameraManPlayerController::FeedSetRigOther);
-        // Ctrl+R clears override and returns to active camera feed
-        InputComponent->BindKey(FInputChord(EKeys::R, EModifierKey::Control), IE_Pressed, this, &AThirdPersonCameraManPlayerController::FeedClearOverride);
         // Q drops the current active camera (operator only)
         InputComponent->BindKey(EKeys::Q, IE_Pressed, this, &AThirdPersonCameraManPlayerController::DropActiveCamera);
     }
