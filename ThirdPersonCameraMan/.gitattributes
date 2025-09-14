@@ -1,0 +1,5 @@
+﻿# Track Unreal binary assets with LFS in this branch
+ThirdPersonCameraMan/Content/**/*.uasset filter=lfs diff=lfs merge=lfs -text
+ThirdPersonCameraMan/Content/**/*.umap   filter=lfs diff=lfs merge=lfs -text
+ThirdPersonCameraMan/Content/**/*.uexp   filter=lfs diff=lfs merge=lfs -text
+ThirdPersonCameraMan/Content/**/*.ubulk  filter=lfs diff=lfs merge=lfs -text

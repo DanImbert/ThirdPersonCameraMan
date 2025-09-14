@@ -1,0 +1,27 @@
+# Unreal Engine (code-only) gitignore
+
+# Generated/derived
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+
+# IDE/editor
+.vs/
+.vscode/
+.idea/
+*.VC.db
+*.opendb
+*.suo
+*.user
+*.sln.DotSettings.user
+
+# OS cruft
+Thumbs.db
+.DS_Store
+
+# Exclude assets for code-only repo
+Content/
+Plugins/*/Content/
+

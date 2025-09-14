@@ -1,0 +1,41 @@
+﻿# Unreal Engine
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# IDE
+.vs/
+.idea/
+*.sln
+*.suo
+*.opensdf
+*.opendb
+*.vcxproj*
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+*.log
+
+# UE assets (opt into LFS separately)
+**/*.uasset
+**/*.umap
+**/*.uexp
+**/*.ubulk
+**/*.uptnl
+
+# Other projects we do not track in this repo
+FD_TechTask/
+SkateFilm/
+
+# Node/npm, python, etc (just in case)
+node_modules/
+.env
+
+# Keep source/config/scripts
+!**/Source/**
+!**/Config/**
+!**/*.ps1
+!**/*.sh
+!**/*.bat
