@@ -70,6 +70,7 @@ void AThirdPersonCameraManPlayerController::BeginPlay()
     }
 }
 
+// Viewer camera: set view target to active rig; return to pawn when cleared
 void AThirdPersonCameraManPlayerController::HandleActiveCameraChanged(ACameraRig* NewCam)
 {
     // If using UI feed, keep it in sync (allow local override)
@@ -395,6 +396,7 @@ void AThirdPersonCameraManPlayerController::FeedToggle()
     }
 }
 
+// Bind input for assignment focus (Q = drop)
 void AThirdPersonCameraManPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
@@ -412,12 +414,14 @@ void AThirdPersonCameraManPlayerController::FeedSetRigOther()
     FeedSetRigByIndex(1);
 }
 
+// Client drop command: ask server to drop active camera
 void AThirdPersonCameraManPlayerController::DropActiveCamera()
 {
     if (!IsLocalController()) return;
     Server_DropActiveCamera();
 }
 
+// Server drop: stop capture, detach, clear ActiveCamera; viewer will return to pawn
 void AThirdPersonCameraManPlayerController::Server_DropActiveCamera_Implementation()
 {
     if (!HasAuthority()) return;

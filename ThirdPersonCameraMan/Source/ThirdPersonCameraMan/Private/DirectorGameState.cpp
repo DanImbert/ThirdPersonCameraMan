@@ -21,6 +21,7 @@ void ADirectorGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 }
 
 
+// Replication handler: arm capture on clients; show switched/none toast
 void ADirectorGameState::OnRep_ActiveCamera()
 {
     // Ensure late-joining clients start capturing from the active camera

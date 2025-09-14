@@ -187,6 +187,7 @@ void ACameraRig::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
     OutResult.FOV = CameraComponent ? CameraComponent->FieldOfView : 90.f;
 }
 
+// Local offsets: place camera (lens) and visual mesh (prop body) independently
 void ACameraRig::ApplyLocalOffsets()
 {
     if (SceneCapture)
@@ -225,6 +226,7 @@ void ACameraRig::ApplyLocalOffsets()
     }
 }
 
+// Upright align: face pawn forward; apply yaw/pitch/roll offsets
 void ACameraRig::ReapplyViewAlignment(APawn* ReferencePawn)
 {
     if (!ReferencePawn)
@@ -276,6 +278,7 @@ void ACameraRig::OnConstruction(const FTransform& Transform)
     ApplyLocalOffsets();
 }
 
+// Pickup handler: gate to operator, then call server attach
 void ACameraRig::OnPawnBegin(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
     if (!HasAuthority()) return;
@@ -304,6 +307,7 @@ void ACameraRig::OnPawnBegin(UPrimitiveComponent*, AActor* OtherActor, UPrimitiv
     }
 }
 
+// Switch handler: only when this rig is active; switch to other rig
 void ACameraRig::OnCameraBegin(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
     if (!HasAuthority()) return;
@@ -325,6 +329,7 @@ void ACameraRig::OnCameraBegin(UPrimitiveComponent*, AActor* OtherActor, UPrimit
     Server_SwitchTo(OtherRig);
 }
 
+// Server-authoritative pickup: attach to pawn, align, enable capture, set ActiveCamera
 void ACameraRig::Server_AttachToPawn(APawn* PawnOperator)
 {
     if (!HasAuthority() || !PawnOperator) return;
@@ -474,6 +479,7 @@ void ACameraRig::Server_AttachToPawn(APawn* PawnOperator)
     }
 }
 
+// Server switch: resolve operator pawn; reuse attach; lock prevents ping-pong
 void ACameraRig::Server_SwitchTo(ACameraRig* NewRig)
 {
     if (!HasAuthority() || !NewRig) return;
