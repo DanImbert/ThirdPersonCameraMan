@@ -24,6 +24,8 @@ public class ThirdPersonCameraMan : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 
+
+		// Include paths for all module subfolders (variants are kept in-source)
 		PublicIncludePaths.AddRange(new string[] {
 			"ThirdPersonCameraMan",
 			"ThirdPersonCameraMan/Variant_Platforming",

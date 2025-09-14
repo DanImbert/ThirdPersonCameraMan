@@ -73,6 +73,19 @@ ACameraRig::ACameraRig()
     LastSwitchTime = -FLT_MAX;
 }
 
+FString ACameraRig::GetRigDisplayName() const
+{
+    if (RigLabel != NAME_None)
+    {
+        return RigLabel.ToString();
+    }
+#if WITH_EDITOR
+    return GetActorLabel();
+#else
+    return GetName();
+#endif
+}
+
 void ACameraRig::BeginPlay()
 {
     Super::BeginPlay();
@@ -465,15 +478,7 @@ void ACameraRig::Server_AttachToPawn(APawn* PawnOperator)
             }
         }
 
-        FString RigName = RigLabel.IsNone() ? FString() : RigLabel.ToString();
-        if (RigName.IsEmpty())
-        {
-#if WITH_EDITOR
-            RigName = GetActorLabel();
-#else
-            RigName = GetName();
-#endif
-        }
+        const FString RigName = GetRigDisplayName();
         const FString Msg = FString::Printf(TEXT("player %d picked up :  %s"), PlayerNum, *RigName);
         GEngine->AddOnScreenDebugMessage(770777, 3.f, FColor::Green, Msg);
     }

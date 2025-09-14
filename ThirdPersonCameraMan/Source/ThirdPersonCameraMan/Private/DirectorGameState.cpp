@@ -37,21 +37,7 @@ void ADirectorGameState::OnRep_ActiveCamera()
             // Friendly on-screen cue so it's clear which camera is now active
             if (GEngine)
             {
-                FString RigName;
-                if (ActiveCamera->RigLabel != NAME_None)
-                {
-                    RigName = ActiveCamera->RigLabel.ToString();
-                }
-#if WITH_EDITOR
-                if (RigName.IsEmpty())
-                {
-                    RigName = ActiveCamera->GetActorLabel();
-                }
-#endif
-                if (RigName.IsEmpty())
-                {
-                    RigName = ActiveCamera->GetName();
-                }
+                const FString RigName = ActiveCamera->GetRigDisplayName();
                 const FString Msg = FString::Printf(TEXT("Switched to :  %s"), *RigName);
                 GEngine->AddOnScreenDebugMessage(770778, 2.5f, FColor::Cyan, Msg);
             }

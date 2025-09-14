@@ -58,6 +58,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Rig")
     FName RigLabel = TEXT("Camera Rig");
 
+    // Helper to get a nice display name for UI/logs
+    UFUNCTION(BlueprintPure, Category="Rig")
+    FString GetRigDisplayName() const;
+
     // Let BP read the RT off the rig
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Capture")
 	UTextureRenderTarget2D* RenderTarget;
