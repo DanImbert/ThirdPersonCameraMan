@@ -58,3 +58,22 @@ Repo Layout
 - Kept: `Source/`, `Config/`, `.uproject`, scripts
 - Ignored: `Content/`, `Binaries/`, `Intermediate/`, `Saved/`, `DerivedDataCache/`, IDE folders
 
+Architecture (high level)
+- Authority: server validates pickup/switch/drop; clients react via replication
+- Flow:
+  1) Operator overlaps CameraRig → server attaches to pawn socket, aligns, capture ON
+  2) GameMode sets `ActiveCamera` on GameState (replicated)
+  3) Clients `OnRep_ActiveCamera` re‑arm capture; viewer PC blends view to rig
+  4) Switching: active rig’s switch sphere overlaps another rig → server switches using a global lock
+  5) Drop (Q): capture OFF, detach, `ActiveCamera` cleared → viewer returns to pawn
+
+Sequence (text)
+Operator → Server: overlap (pickup)
+Server → Rig: AttachToComponent + Capture ON
+Server → GameState: Set ActiveCamera
+GameState ⇢ Clients: OnRep ActiveCamera
+Viewer PC → Viewer: SetViewTargetWithBlend(rig)
+Operator (Q) → Server: DropActiveCamera
+Server → Rig: Capture OFF + Detach
+Server → GameState: ActiveCamera = None
+Clients: Toast “Active camera: none”, viewer returns to pawn
