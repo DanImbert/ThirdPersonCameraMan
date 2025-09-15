@@ -1,24 +1,24 @@
-ThirdPersonCameraMan (Code‑only)
+ThirdPersonCameraMan
 
 UE 5.6 multiplayer sample implementing a simple “film director” flow:
 - Operator picks up camera rigs placed in the world (one at a time)
-- Camera “turns on” (SceneCapture2D → transient RenderTarget)
+- Camera “turns on” (SceneCapture2D + transient RenderTarget)
 - Viewer automatically sees what the active camera films
 - Switching: bump the active rig into another rig to switch
 - Drop: Operator presses `Q` to drop the current rig (feed stops; viewer returns to pawn)
 
 Requirements
 - Unreal Engine 5.6
-- This repository is code‑only: no Content/ assets are tracked. Rigs auto‑create transient render targets at runtime.
+- Git LFS (assets in `Content/` are tracked with LFS)
 
-Open & Run
-- Open `ThirdPersonCameraMan.uproject`
-- Play In Editor with 2 players (Listen Server)
-  - Window → Play → Advanced Settings
+Getting Started
+- Clone the repo, then run `git lfs install` and `git lfs pull` so maps and assets download.
+- Open `ThirdPersonCameraMan.uproject` (Engine 5.6). Let it compile the C++ module.
+- Play In Editor with 2 players (Listen Server):
+  - Window > Play > Advanced Settings
   - Number of Players: 2
   - Net Mode: Listen Server
-- In the level, place a few `BP_CameraRig` instances
-  - Give each a unique label (e.g., BP_CameraRig1/2/3) or set `RigLabel` in Details
+- Ensure the level has a few `BP_CameraRig` actors placed (or place them in the map). Optionally set each instance’s `RigLabel` for clearer on‑screen messages.
 
 Controls (Operator)
 - Overlap a rig to pick it up (attaches to head socket if present)
@@ -36,8 +36,6 @@ Implementation Notes
 - One camera at a time
   - Old rig is detached and capture disabled before enabling the new one
   - Global switch lock (0.15 s) prevents ping‑pong on overlaps
-- Switching reliability
-  - Switch sphere overlaps both WorldDynamic and WorldStatic; radius = 150 by default
 - No RT asset required
   - Each rig creates a transient RT on BeginPlay (or clones size from an assigned RT asset)
 
@@ -55,25 +53,16 @@ Logs (optional)
 Use `log LogDirectorRig VeryVerbose` in the console to increase verbosity if needed.
 
 Repo Layout
-- Kept: `Source/`, `Config/`, `.uproject`, scripts
-- Ignored: `Content/`, `Binaries/`, `Intermediate/`, `Saved/`, `DerivedDataCache/`, IDE folders
+- Kept: `Source/`, `Config/`, `Content/`, `.uproject`, scripts
+- Ignored: `Binaries/`, `Intermediate/`, `Saved/`, `DerivedDataCache/`, IDE folders
 
-Architecture (high level)
-- Authority: server validates pickup/switch/drop; clients react via replication
-- Flow:
-  1) Operator overlaps CameraRig → server attaches to pawn socket, aligns, capture ON
-  2) GameMode sets `ActiveCamera` on GameState (replicated)
-  3) Clients `OnRep_ActiveCamera` re‑arm capture; viewer PC blends view to rig
-  4) Switching: active rig’s switch sphere overlaps another rig → server switches using a global lock
-  5) Drop (Q): capture OFF, detach, `ActiveCamera` cleared → viewer returns to pawn
+Notes
+- Assets are included and tracked via Git LFS. If you see missing maps/assets after cloning, run `git lfs install` and `git lfs pull`.
+- The sample does not require a pre‑made RenderTarget asset; rigs create transient RTs on startup.
+- Any `DirectorCameraManager.*` seen in prior builds is not part of this repo and is not required; the flow uses `ADirectorGameState` and `AThirdPersonCameraManPlayerController`.
 
-Sequence (text)
-Operator → Server: overlap (pickup)
-Server → Rig: AttachToComponent + Capture ON
-Server → GameState: Set ActiveCamera
-GameState ⇢ Clients: OnRep ActiveCamera
-Viewer PC → Viewer: SetViewTargetWithBlend(rig)
-Operator (Q) → Server: DropActiveCamera
-Server → Rig: Capture OFF + Detach
-Server → GameState: ActiveCamera = None
-Clients: Toast “Active camera: none”, viewer returns to pawn
+Troubleshooting
+- No overlay feed: Ensure the UI widget asset `WBP_CameraFeed` exists and `CameraFeedClass` is set on your PlayerController BP.
+- No movement: Verify Enhanced Input assets/mapping contexts are present and applied by your Controller/GameMode.
+- Wrong map/mode: Check `Config/DefaultEngine.ini` under `[/Script/EngineSettings.GameMapsSettings]` for `GameDefaultMap` and `GlobalDefaultGameMode`.
+
